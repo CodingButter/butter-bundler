@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const fs = require("fs");
 const chokidar = require("chokidar")
 const liveServer = require("live-server")
@@ -6,20 +5,18 @@ const { build } = require("esbuild")
 const alias = require("esbuild-plugin-alias")
 const { findJavascriptFiles } = require("../lib/htmlParse");
 const htmlFile = process.argv[2].indexOf(".js") == -1 ? process.argv[2] : process.arv[3]
-
 if (!htmlFile) new Error("Must include a Html File")
 const html = fs.readFileSync(htmlFile)
 fs.copyFileSync(htmlFile, `dist/${htmlFile}`)
-
 const jsFiles = findJavascriptFiles(html)
-
-const runBuilder = async () => {
-      const builder = await build({
+const runBuilder = () => {
+      const builder = build({
             bundle: true,
             loader: { '.js': 'jsx' },
             define: { "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development") },
             entryPoints: jsFiles,
-            incremental: true,
+            incremental: process.env.NODE_ENV !== "production",
+            watch: false,
             minify: process.env.NODE_ENV === "production",
             outfile: `dist/index.js`,
             plugins: process.env.NODE_ENV !== "production" && [
@@ -53,8 +50,7 @@ const developeServer = async () => {
             root: "./dist/",
       })
 }
-
-if (process.env.NOD_ENV == "development") developeServer()
+if (process.env.NODE_ENV !== "production") developeServer()
 else runBuilder()
 
 
