@@ -22,12 +22,11 @@ const jsFiles = findJavascriptFiles(html)
                   //minify: process.env.NODE_ENV === "production",
                   //minify: true,
                   outfile: `dist/index.js`,
-                  plugins: [
-                        alias({
-                              'react': 'reacty',
-                              'reacty': './reacty'
-                        })
-                  ]
+                  // plugins: [
+                  //       alias({
+                  //             'react': 'reacty',
+                  //       })
+                  // ]
             })
             chokidar
                   .watch(["react/**/*.{js,jsx,ts,tsx}", "src/**/*.{js,jsx,ts,tsx}"], {
